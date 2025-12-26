@@ -289,7 +289,7 @@ function orderViaWhatsApp() {
   });
   msg += `%0ATotal: $${total}`;
 
-  const phone = "1234567890"; // CHANGE TO YOUR NUMBER
+  const phone = "555135501"; // CHANGE TO YOUR NUMBER
   window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
 
   // AUTO CLOSE AND CLEAR
