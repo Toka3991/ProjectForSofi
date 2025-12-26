@@ -1,3 +1,65 @@
+let isBannerVisible = true; // Track if the banner is already visible
+
+// Translations for the test mode message
+const testMessages = {
+  ka: {
+    message: "🚧 <strong>ეს ვებგვერდი ამჟამად ტესტირების რეჟიმშია.</strong> თუ დააფიქსირეთ რომელიმე შეცდომა, გთხოვთ, აცნობოთ შემქმნელს: <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>."
+  },
+  en: {
+    message: "🚧 <strong>This website is currently in test mode.</strong> If you notice any bugs, please report them to the developer at <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>."
+  },
+  es: {
+    message: "🚧 <strong>Este sitio web está en modo de prueba.</strong> Si encuentras algún error, por favor infórmalo al desarrollador en <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>."
+  },
+  fr: {
+    message: "🚧 <strong>Ce site Web est actuellement en mode test.</strong> Si vous remarquez des bugs, veuillez les signaler au développeur à <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>."
+  },
+  ar: {
+    message: "🚧 <strong>هذا الموقع حاليًا في وضع الاختبار.</strong> إذا لاحظت أي أخطاء، يرجى الإبلاغ عنها للمطور عبر البريد الإلكتروني <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>."
+  }
+};
+
+// Show banner when the page loads (if not already hidden)
+window.addEventListener('load', function() {
+  if (isBannerVisible) {
+    document.getElementById("testBanner").style.display = "flex";
+  }
+
+  // Set the message to the default language (Georgian)
+  updateTestMessage("ka"); // Default to Georgian (ka)
+});
+
+// Function to update the test mode message based on the language
+function updateTestMessage(lang) {
+  const messageElement = document.getElementById("testMessage");
+  if (testMessages[lang]) {
+    messageElement.innerHTML = testMessages[lang].message;
+  }
+}
+
+// Close the Test Banner when user clicks '×'
+document.getElementById("closeBanner").addEventListener("click", function() {
+  document.getElementById("testBanner").style.display = "none";
+  isBannerVisible = false; // Set flag to hide banner on language change
+});
+
+// Language change event listener
+document.getElementById("langSelect").addEventListener("change", function() {
+  const selectedLang = document.getElementById("langSelect").value;
+
+  // Make sure the banner is visible when the language is changed
+  if (!isBannerVisible) {
+    document.getElementById("testBanner").style.display = "flex";
+    isBannerVisible = true;
+  }
+
+  // Update the message to the selected language
+  updateTestMessage(selectedLang);
+
+  // Call your existing translatePage() function
+  translatePage();
+});
+
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 /* TRANSLATIONS */
