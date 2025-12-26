@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8">
+  <title>Sofi's ART</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LANGUAGE SELECTOR -->
+<div class="language-selector">
+  <label for="langSelect">🌐</label>
+  <select id="langSelect">
+    <option value="ka" selected>ქართული</option>
+    <option value="en">English</option>
+    <option value="es">Español</option>
+    <option value="fr">Français</option>
+    <option value="ar">العربية</option>
+  </select>
+</div>
+
+<h1 id="storeTitle">🛍️ Sofi's ART</h1>
+
+<section class="products">
+  <!-- Product 1 -->
+  <div class="product">
+    <img src="images/IMG-20251129-WA0015.jpg" alt="Product A">
+    <h3 class="product-name" data-key="productA">პროდუქტი A</h3>
+    <p class="product-price" data-price="12">$12</p>
+    <button class="add-btn" data-name="Product A" data-price="12" data-key="addToCart">კალათაში დამატება</button>
+  </div>
+
+  <!-- Product 2 -->
+  <div class="product">
+    <img src="images/IMG-20251129-WA0019.jpg" alt="Product B">
+    <h3 class="product-name" data-key="productB">პროდუქტი B</h3>
+    <p class="product-price" data-price="18">$18</p>
+    <button class="add-btn" data-name="Product B" data-price="18" data-key="addToCart">კალათაში დამატება</button>
+  </div>
+</section>
+
+<section class="cart">
+  <h2 id="cartTitle">🛒 კალათა</h2>
+  <div id="cartItems"></div>
+  <p id="totalPrice">სულ: $0</p>
+
+  <button class="checkout-btn" id="openCheckout" data-key="proceedOrder">შეკვეთის გაგრძელება</button>
+</section>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal" id="checkoutModal">
+  <div class="modal-content">
+    <h3 id="modalTitle">დადასტურეთ თქვენი დეტალები</h3>
+
+    <input type="text" id="customerName" placeholder="თქვენი სახელი">
+    <textarea id="customerAddress" placeholder="მიწოდების მისამართი"></textarea>
+
+    <button id="confirmOrder" data-key="orderWhatsApp">შეკვეთა WhatsApp-ზე</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    &#169; 2025 
+    <a href="mailto:User10603991@gmail.com" class="footer-btn">Toka3991</a>
+  </p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
