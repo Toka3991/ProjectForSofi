@@ -4,8 +4,8 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 const translations = {
   ka: {
     storeTitle: "🛍️ Sofi's ART",
-    productA: "პროდუქტი A",
-    productB: "პროდუქტი B",
+    productA: "სარკე",
+    productB: "ყვავილი",
     addToCart: "კალათაში დამატება",
     cartTitle: "🛒 კალათა",
     total: "სულ",
@@ -20,8 +20,8 @@ const translations = {
   },
   en: {
     storeTitle: "🛍️ Sofi's ART",
-    productA: "Product A",
-    productB: "Product B",
+    productA: "Mirror",
+    productB: "Flower",
     addToCart: "Add to Cart",
     cartTitle: "🛒 Cart",
     total: "Total",
@@ -36,8 +36,8 @@ const translations = {
   },
   es: {
     storeTitle: "🛍️ Sofi's ART",
-    productA: "Producto A",
-    productB: "Producto B",
+    productA: "espejo",
+    productB: "flor",
     addToCart: "Añadir al Carrito",
     cartTitle: "🛒 Carrito",
     total: "Total",
@@ -52,8 +52,8 @@ const translations = {
   },
   fr: {
     storeTitle: "🛍️ Sofi's ART",
-    productA: "Produit A",
-    productB: "Produit B",
+    productA: "miroir",
+    productB: "fleur",
     addToCart: "Ajouter au Panier",
     cartTitle: "🛒 Panier",
     total: "Total",
@@ -68,8 +68,8 @@ const translations = {
   },
   ar: {
     storeTitle: "🛍️ Sofi's ART",
-    productA: "المنتج أ",
-    productB: "المنتج ب",
+    productA: "مرآة",
+    productB: "ورد",
     addToCart: "أضف إلى السلة",
     cartTitle: "🛒 السلة",
     total: "المجموع",
