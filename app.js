@@ -1,68 +1,47 @@
-let isBannerVisible = true; // Track if the banner is already visible
-
-// Translations for the test mode message
-const testMessages = {
-  ka: {
-    message: "🚧 <strong>ეს ვებგვერდი ამჟამად ტესტირების რეჟიმშია.</strong> თუ დააფიქსირეთ რომელიმე შეცდომა, გთხოვთ, აცნობოთ შემქმნელს: <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>."
-  },
-  en: {
-    message: "🚧 <strong>This website is currently in test mode.</strong> If you notice any bugs, please report them to the developer at <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>."
-  },
-  es: {
-    message: "🚧 <strong>Este sitio web está en modo de prueba.</strong> Si encuentras algún error, por favor infórmalo al desarrollador en <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>."
-  },
-  fr: {
-    message: "🚧 <strong>Ce site Web est actuellement en mode test.</strong> Si vous remarquez des bugs, veuillez les signaler au développeur à <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>."
-  },
-  ar: {
-    message: "🚧 <strong>هذا الموقع حاليًا في وضع الاختبار.</strong> إذا لاحظت أي أخطاء، يرجى الإبلاغ عنها للمطور عبر البريد الإلكتروني <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>."
-  }
+/***********************
+ * GLOBAL STATE
+ ***********************/
+const state = {
+  cart: JSON.parse(localStorage.getItem("cart")) || [],
+  lang: localStorage.getItem("lang") || "ka",
+  bannerVisible: localStorage.getItem("bannerVisible") !== "false"
 };
 
-// Show banner when the page loads (if not already hidden)
-window.addEventListener('load', function() {
-  if (isBannerVisible) {
-    document.getElementById("testBanner").style.display = "flex";
-  }
-
-  // Set the message to the default language (Georgian)
-  updateTestMessage("ka"); // Default to Georgian (ka)
-});
-
-// Function to update the test mode message based on the language
-function updateTestMessage(lang) {
-  const messageElement = document.getElementById("testMessage");
-  if (testMessages[lang]) {
-    messageElement.innerHTML = testMessages[lang].message;
-  }
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(state.cart));
 }
 
-// Close the Test Banner when user clicks '×'
-document.getElementById("closeBanner").addEventListener("click", function() {
-  document.getElementById("testBanner").style.display = "none";
-  isBannerVisible = false; // Set flag to hide banner on language change
-});
+/***********************
+ * TEST MODE BANNER
+ ***********************/
+const testMessages = {
+  ka: "🚧 <strong>ეს ვებგვერდი ამჟამად ტესტირების რეჟიმშია.</strong> შეცდომების შემთხვევაში: <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>",
+  en: "🚧 <strong>This website is currently in test mode.</strong> Report bugs: <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>",
+  es: "🚧 <strong>Este sitio web está en modo de prueba.</strong> Reporta errores: <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>",
+  fr: "🚧 <strong>Ce site est en mode test.</strong> Signalez les bugs : <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>",
+  ar: "🚧 <strong>هذا الموقع في وضع الاختبار.</strong> الإبلاغ عن الأخطاء: <a href='mailto:User10603991@gmail.com'>User10603991@gmail.com</a>"
+};
 
-// Language change event listener
-document.getElementById("langSelect").addEventListener("change", function() {
-  const selectedLang = document.getElementById("langSelect").value;
-
-  // Make sure the banner is visible when the language is changed
-  if (!isBannerVisible) {
-    document.getElementById("testBanner").style.display = "flex";
-    isBannerVisible = true;
+function initBanner() {
+  const banner = document.getElementById("testBanner");
+  if (!state.bannerVisible) {
+    banner.style.display = "none";
+    return;
   }
+  banner.style.display = "flex";
+  document.getElementById("testMessage").innerHTML =
+    testMessages[state.lang] || testMessages.ka;
+}
 
-  // Update the message to the selected language
-  updateTestMessage(selectedLang);
+function closeBanner() {
+  state.bannerVisible = false;
+  localStorage.setItem("bannerVisible", "false");
+  document.getElementById("testBanner").style.display = "none";
+}
 
-  // Call your existing translatePage() function
-  translatePage();
-});
-
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-/* TRANSLATIONS */
+/***********************
+ * TRANSLATIONS
+ ***********************/
 const translations = {
   ka: {
     storeTitle: "🛍️ Sofi's ART",
@@ -71,6 +50,7 @@ const translations = {
     addToCart: "კალათაში დამატება",
     cartTitle: "🛒 კალათა",
     total: "სულ",
+    currency: "$",
     proceedOrder: "შეკვეთის გაგრძელება",
     modalTitle: "დადასტურეთ თქვენი დეტალები",
     orderWhatsApp: "შეკვეთა WhatsApp-ზე",
@@ -87,6 +67,7 @@ const translations = {
     addToCart: "Add to Cart",
     cartTitle: "🛒 Cart",
     total: "Total",
+    currency: "$",
     proceedOrder: "Proceed to Order",
     modalTitle: "Confirm Your Details",
     orderWhatsApp: "Order via WhatsApp",
@@ -98,32 +79,34 @@ const translations = {
   },
   es: {
     storeTitle: "🛍️ Sofi's ART",
-    productA: "espejo",
-    productB: "flor",
-    addToCart: "Añadir al Carrito",
+    productA: "Espejo",
+    productB: "Flor",
+    addToCart: "Añadir al carrito",
     cartTitle: "🛒 Carrito",
     total: "Total",
-    proceedOrder: "Continuar Pedido",
-    modalTitle: "Confirma Tus Datos",
+    currency: "$",
+    proceedOrder: "Continuar pedido",
+    modalTitle: "Confirma tus datos",
     orderWhatsApp: "Pedir por WhatsApp",
-    namePlaceholder: "Tu Nombre",
-    addressPlaceholder: "Dirección de Entrega",
+    namePlaceholder: "Tu nombre",
+    addressPlaceholder: "Dirección de entrega",
     emptyCart: "Tu carrito está vacío",
     pleaseFill: "Por favor ingresa nombre y dirección",
     orderMsg: "Por favor realiza un pedido:"
   },
   fr: {
     storeTitle: "🛍️ Sofi's ART",
-    productA: "miroir",
-    productB: "fleur",
-    addToCart: "Ajouter au Panier",
+    productA: "Miroir",
+    productB: "Fleur",
+    addToCart: "Ajouter au panier",
     cartTitle: "🛒 Panier",
     total: "Total",
-    proceedOrder: "Passer la Commande",
-    modalTitle: "Confirmez Vos Informations",
+    currency: "$",
+    proceedOrder: "Passer la commande",
+    modalTitle: "Confirmez vos informations",
     orderWhatsApp: "Commander via WhatsApp",
-    namePlaceholder: "Votre Nom",
-    addressPlaceholder: "Adresse de Livraison",
+    namePlaceholder: "Votre nom",
+    addressPlaceholder: "Adresse de livraison",
     emptyCart: "Votre panier est vide",
     pleaseFill: "Veuillez entrer le nom et l'adresse",
     orderMsg: "Veuillez passer une commande:"
@@ -135,6 +118,7 @@ const translations = {
     addToCart: "أضف إلى السلة",
     cartTitle: "🛒 السلة",
     total: "المجموع",
+    currency: "$",
     proceedOrder: "المتابعة للطلب",
     modalTitle: "تأكيد بياناتك",
     orderWhatsApp: "الطلب عبر WhatsApp",
@@ -146,157 +130,155 @@ const translations = {
   }
 };
 
-/* INIT */
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("checkoutModal").style.display = "none";
-  renderCart(); // Just render the cart, don't add items automatically
-  translatePage();
-
-  // Add event listeners to all add-to-cart buttons
-  document.querySelectorAll(".add-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      addToCart(btn.dataset.key, Number(btn.dataset.price));
-    });
-  });
-
-  document.getElementById("openCheckout").onclick = openModal;
-  document.getElementById("confirmOrder").onclick = orderViaWhatsApp;
-
-  // Change language based on the user's selection
-  document.getElementById("langSelect").addEventListener("change", translatePage);
-});
-
-/* TRANSLATION FUNCTION */
+/***********************
+ * I18N
+ ***********************/
 function translatePage() {
-  const lang = document.getElementById("langSelect").value;
-  const t = translations[lang];
+  const t = translations[state.lang];
 
-  // RTL toggle
-  if (lang === "ar") {
-    document.body.classList.add("rtl");
-  } else {
-    document.body.classList.remove("rtl");
-  }
+  document.body.classList.toggle("rtl", state.lang === "ar");
 
   document.getElementById("storeTitle").innerText = t.storeTitle;
-  document.querySelectorAll(".product-name").forEach(el => {
-    el.innerText = t[el.dataset.key];
-  });
-  document.querySelectorAll(".add-btn").forEach(btn => {
-    btn.innerText = t.addToCart;
-  });
   document.getElementById("cartTitle").innerText = t.cartTitle;
   document.getElementById("openCheckout").innerText = t.proceedOrder;
   document.getElementById("modalTitle").innerText = t.modalTitle;
   document.getElementById("confirmOrder").innerText = t.orderWhatsApp;
+
   document.getElementById("customerName").placeholder = t.namePlaceholder;
   document.getElementById("customerAddress").placeholder = t.addressPlaceholder;
-  renderCart(); // Updates total and translated product names
+
+  document.querySelectorAll(".product-name").forEach(el => {
+    el.innerText = t[el.dataset.key];
+  });
+
+  document.querySelectorAll(".add-btn").forEach(btn => {
+    btn.innerText = t.addToCart;
+  });
+
+  initBanner();
+  renderCart();
 }
 
-/* CART LOGIC */
-function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
-}
-
+/***********************
+ * CART
+ ***********************/
 function addToCart(key, price) {
-  const item = cart.find(i => i.key === key);
-  if (item) {
-    item.qty++;
-  } else {
-    cart.push({ key, price, qty: 1 });
-  }
+  const item = state.cart.find(i => i.key === key);
+  item ? item.qty++ : state.cart.push({ key, price, qty: 1 });
   saveCart();
   renderCart();
 }
 
 function changeQty(key, delta) {
-  const item = cart.find(i => i.key === key);
+  const item = state.cart.find(i => i.key === key);
   if (!item) return;
-
   item.qty += delta;
-  if (item.qty <= 0) cart = cart.filter(i => i.key !== key);
-
+  if (item.qty <= 0) {
+    state.cart = state.cart.filter(i => i.key !== key);
+  }
   saveCart();
   renderCart();
 }
 
 function renderCart() {
+  const t = translations[state.lang];
   const cartDiv = document.getElementById("cartItems");
   cartDiv.innerHTML = "";
-  let total = 0;
-  const lang = document.getElementById("langSelect").value;
-  const t = translations[lang];
 
-  cart.forEach(item => {
+  let total = 0;
+
+  state.cart.forEach(item => {
     total += item.price * item.qty;
-    const name = t[item.key]; // translated product name
-    const cartItem = document.createElement("div");
-    cartItem.className = "cart-item";
-    cartItem.innerHTML = `
-      <span>${name}</span>
-      <div>
-        <button class="qty-btn" data-key="${item.key}" data-delta="-1">-</button>
-        ${item.qty}
-        <button class="qty-btn" data-key="${item.key}" data-delta="1">+</button>
+    cartDiv.innerHTML += `
+      <div class="cart-item">
+        <span>${t[item.key]}</span>
+        <div>
+          <button class="qty-btn" onclick="changeQty('${item.key}',-1)">−</button>
+          ${item.qty}
+          <button class="qty-btn" onclick="changeQty('${item.key}',1)">+</button>
+        </div>
       </div>
     `;
-    cartDiv.appendChild(cartItem);
   });
 
-  document.querySelectorAll(".qty-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      changeQty(btn.dataset.key, Number(btn.dataset.delta));
-    });
-  });
+  document.getElementById("totalPrice").innerText =
+    `${t.total}: ${t.currency}${total}`;
 
-  document.getElementById("totalPrice").innerText = `${t.total}: $${total}`;
+  document.getElementById("openCheckout").disabled = !state.cart.length;
 }
 
-/* MODAL */
+/***********************
+ * MODAL
+ ***********************/
 function openModal() {
-  if (!cart.length) {
-    alert(translations[document.getElementById("langSelect").value].emptyCart);
+  if (!state.cart.length) {
+    alert(translations[state.lang].emptyCart);
     return;
   }
   document.getElementById("checkoutModal").style.display = "flex";
 }
 
-window.onclick = function (e) {
+window.onclick = e => {
   const modal = document.getElementById("checkoutModal");
   if (e.target === modal) modal.style.display = "none";
 };
 
-/* WHATSAPP ORDER */
+/***********************
+ * WHATSAPP ORDER
+ ***********************/
 function orderViaWhatsApp() {
-  const name = document.getElementById("customerName").value.trim();
-  const address = document.getElementById("customerAddress").value.trim();
-  const lang = document.getElementById("langSelect").value;
-  const t = translations[lang];
+  const t = translations[state.lang];
+  const name = customerName.value.trim();
+  const address = customerAddress.value.trim();
 
   if (!name || !address) {
     alert(t.pleaseFill);
     return;
   }
 
-  let msg = `${t.orderMsg}%0A%0A`;
-  msg += `Name: ${name}%0AAddress: ${address}%0A%0A`;
+  let msg = `${t.orderMsg}\n\nName: ${name}\nAddress: ${address}\n\n`;
   let total = 0;
-  cart.forEach(i => {
-    const prodName = t[i.key];
-    msg += `- ${prodName} x ${i.qty} = $${i.price * i.qty}%0A`;
+
+  state.cart.forEach(i => {
+    msg += `- ${t[i.key]} x ${i.qty} = ${t.currency}${i.price * i.qty}\n`;
     total += i.price * i.qty;
   });
-  msg += `%0ATotal: $${total}`;
 
-  const phone = "555135501"; // CHANGE TO YOUR NUMBER
-  window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
+  msg += `\n${t.total}: ${t.currency}${total}`;
 
-  // AUTO CLOSE AND CLEAR
-  document.getElementById("checkoutModal").style.display = "none";
-  cart = [];
-  localStorage.removeItem("cart");
+  window.open(
+    `https://wa.me/555135501?text=${encodeURIComponent(msg)}`,
+    "_blank"
+  );
+
+  state.cart = [];
+  saveCart();
   renderCart();
-  document.getElementById("customerName").value = "";
-  document.getElementById("customerAddress").value = "";
+  checkoutModal.style.display = "none";
+  customerName.value = "";
+  customerAddress.value = "";
 }
+
+/***********************
+ * INIT
+ ***********************/
+document.addEventListener("DOMContentLoaded", () => {
+  langSelect.value = state.lang;
+  translatePage();
+
+  langSelect.onchange = () => {
+    state.lang = langSelect.value;
+    localStorage.setItem("lang", state.lang);
+    checkoutModal.style.display = "none";
+    translatePage();
+  };
+
+  document.querySelectorAll(".add-btn").forEach(btn => {
+    btn.onclick = () =>
+      addToCart(btn.dataset.key, Number(btn.dataset.price));
+  });
+
+  document.getElementById("openCheckout").onclick = openModal;
+  document.getElementById("confirmOrder").onclick = orderViaWhatsApp;
+  document.getElementById("closeBanner").onclick = closeBanner;
+});
