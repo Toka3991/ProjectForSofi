@@ -236,12 +236,20 @@ function orderViaWhatsApp() {
     return;
   }
 
-  let msg = `${t.orderMsg}\n\nName: ${name}\nAddress: ${address}\n\n`;
+  let msg = `${t.orderMsg}\n\n`;
+  msg += `Name: ${name}\n`;
+  msg += `Address: ${address}\n\n`;
+
   let total = 0;
 
-  state.cart.forEach(i => {
-    msg += `- ${t[i.key]} x ${i.qty} = ${t.currency}${i.price * i.qty}\n`;
-    total += i.price * i.qty;
+  state.cart.forEach(item => {
+    // SAFELY resolve product name
+    const productName = t[item.key] || item.key;
+
+    const lineTotal = item.price * item.qty;
+    total += lineTotal;
+
+    msg += `• ${productName} × ${item.qty} = ${t.currency}${lineTotal}\n`;
   });
 
   msg += `\n${t.total}: ${t.currency}${total}`;
@@ -251,6 +259,7 @@ function orderViaWhatsApp() {
     "_blank"
   );
 
+  // Clear cart after order
   state.cart = [];
   saveCart();
   renderCart();
