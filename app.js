@@ -291,3 +291,38 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("confirmOrder").onclick = orderViaWhatsApp;
   document.getElementById("closeBanner").onclick = closeBanner;
 });
+// 🎵 Background Music Control
+const bgMusic = document.getElementById("bgMusic");
+const musicBtn = document.getElementById("musicBtn");
+
+if (bgMusic && musicBtn) {
+  bgMusic.volume = 0.25; // soft volume
+
+  // Restore user preference
+  if (localStorage.getItem("music") === "on") {
+    bgMusic.play().catch(() => {});
+    musicBtn.textContent = "⏸ Music";
+  }
+
+  musicBtn.addEventListener("click", () => {
+    if (bgMusic.paused) {
+      bgMusic.play();
+      musicBtn.textContent = "⏸ Music";
+      localStorage.setItem("music", "on");
+    } else {
+      bgMusic.pause();
+      musicBtn.textContent = "🎵 Music";
+      localStorage.setItem("music", "off");
+    }
+  });
+}
+
+// 🔇 Stop music when checkout opens
+const checkoutBtn = document.getElementById("openCheckout");
+if (checkoutBtn && bgMusic) {
+  checkoutBtn.addEventListener("click", () => {
+    bgMusic.pause();
+    musicBtn.textContent = "🎵 Music";
+    localStorage.setItem("music", "off");
+  });
+}
